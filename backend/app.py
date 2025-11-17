@@ -8,6 +8,7 @@ app = Flask(__name__)
 CORS(app)  # Permitir CORS para desarrollo
 
 prolog = Prolog()
+prolog_loaded = False
 
 # Cargar el archivo Prolog
 try:
@@ -15,14 +16,18 @@ try:
     prolog_file = Path(__file__).resolve().parent / "Sistema_Experto.pl"
     prolog_path = str(prolog_file).replace("\\", "/")
     prolog.consult(prolog_path)
+    prolog_loaded = True
     print("✓ Prolog cargado correctamente.")
 except Exception as e:
+    prolog_loaded = False
     print(f"✗ Error al cargar Prolog: {e}")
 
 
 @app.route("/api/generate-routine", methods=["POST"])
 def generate_routine():
     try:
+        if not prolog_loaded:
+            return jsonify({"error": "Sistema experto Prolog no cargado"}), 500
         data = request.get_json()
         split = data.get("split", "").strip().lower()
         objetivo = data.get("objetivo", "").strip().lower()
@@ -114,8 +119,18 @@ def generate_routine():
 @app.route("/health", methods=["GET"])
 def health():
     """Endpoint para verificar que el servidor está funcionando"""
-    return jsonify({"status": "ok", "message": "Flask + Prolog funcionando correctamente"})
+    return jsonify({
+        "status": "ok",
+        "message": "Flask funcionando",
+        "prolog_loaded": prolog_loaded
+    })
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Leer configuración desde variables de entorno
+    port = int(os.getenv("PORT", 5000))
+    debug_env = os.getenv("FLASK_DEBUG", "1")
+    debug = debug_env not in ("0", "false", "False")
+    host = os.getenv("HOST", "0.0.0.0")
+
+    app.run(host=host, port=port, debug=debug)

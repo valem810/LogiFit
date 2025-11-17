@@ -1,14 +1,16 @@
-# LOGIFIT - Sistema Experto de Rutinas de Entrenamiento
+# LOGIFIT - Generador Inteligente de Rutinas de Entrenamiento
 
-LOGIFIT es un generador inteligente de rutinas de entrenamiento que utiliza un sistema experto basado en Prolog para crear programas personalizados según tus objetivos y preferencias.
+LOGIFIT es una aplicación que genera rutinas de entrenamiento personalizadas usando un sistema experto (SWI-Prolog) y una API en Flask, con una interfaz moderna en Next.js.
+
+Objetivo: permitir a usuarios obtener programas de entrenamiento (Full Body, Push-Pull-Legs, Upper-Lower) adaptados a su objetivo (fuerza o hipertrofia), seleccionando ejercicios, series y repeticiones según reglas y restricciones definidas en la base de conocimiento Prolog.
 
 ## Características
 
 - **Sistema Experto en Prolog**: Motor de inferencia que genera rutinas basadas en reglas de entrenamiento
-- **Múltiples Splits**: Full Body, Push-Pull-Legs, y Upper-Lower
+- **Múltiples Splits**: Full Body, Push-Pull-Legs y Upper-Lower
 - **Objetivos Personalizados**: Fuerza o Hipertrofia
 - **Interfaz Conversacional**: Chatbot interactivo con selección por botones
-- **Recomendaciones Detalladas**: Series, repeticiones y porcentaje de peso según objetivo
+- **Recomendaciones Detalladas**: Series, repeticiones y porcentajes de carga según objetivo
 
 ## Requisitos Previos
 
@@ -16,7 +18,7 @@ LOGIFIT es un generador inteligente de rutinas de entrenamiento que utiliza un s
 
 1. **Python 3.8+**
 2. **SWI-Prolog**
-   - Windows: [Descargar](https://www.swi-prolog.org/download/stable)
+   - Windows: descargar desde https://www.swi-prolog.org/download/stable
    - macOS: `brew install swi-prolog`
    - Linux: `sudo apt-get install swi-prolog`
 
@@ -24,85 +26,48 @@ LOGIFIT es un generador inteligente de rutinas de entrenamiento que utiliza un s
 
 1. **Node.js 18+**
 
-## Instalación
+## Instalación y ejecución (resumen)
 
-### 1. Instalar dependencias del frontend
+Importante: únicamente el primer bloque de comandos está etiquetado como `bash` en este archivo. Después de ejecutar ese comando inicial, abre dos consolas separadas (una para el frontend y otra para el backend) y ejecuta los comandos restantes tal como aparecen (sin el prefijo `bash`). En Windows usa PowerShell o CMD; en macOS/Linux usa tu terminal habitual.
 
-\`\`\`bash
+### 1) Preparar dependencias (ejecutar desde la raíz del proyecto)
+
+```bash
 npm install
-\`\`\`
+```
 
-### 2. Instalar dependencias del backend
+> Nota: el bloque anterior está etiquetado `bash` — es el único bloque con esa etiqueta. A continuación abre dos consolas separadas y sigue los pasos para frontend y backend.
 
-\`\`\`bash
+### 2) Consola A — Backend
+
+En la primera consola, instala las dependencias de Python (si no lo hiciste ya) y arranca el servidor Flask:
+
+```
 pip install -r backend/requirements.txt
-\`\`\`
-
-## Ejecución
-
-### 1. Iniciar el servidor Flask (Backend)
-
-\`\`\`bash
 python backend/app.py
-\`\`\`
+```
 
-El servidor Flask se ejecutará en `http://localhost:5000`
+El backend quedará disponible en `http://localhost:5000`.
 
-### 2. Iniciar el servidor Next.js (Frontend)
+### 3) Consola B — Frontend
 
-En otra terminal:
+En la segunda consola, inicia el servidor de desarrollo de Next.js:
 
-\`\`\`bash
+```
 npm run dev
-\`\`\`
+```
 
-El sitio estará disponible en `http://localhost:3000`
+El frontend quedará disponible en `http://localhost:3000`.
 
-## Estructura del Proyecto
+## Cómo funciona (resumen)
 
-\`\`\`
-logifit/
-├── app/
-│   ├── page.tsx              # Página principal
-│   └── layout.tsx            # Layout global
-├── components/
-│   ├── navbar.tsx            # Barra de navegación
-│   ├── hero.tsx              # Sección hero
-│   ├── info-section.tsx      # Información del sistema
-│   ├── chatbot-section.tsx   # Chatbot interactivo
-│   ├── routine-display.tsx   # Visualización de rutinas
-│   └── footer.tsx            # Pie de página
-├── scripts/
-│   ├── sistema_experto.pl    # Motor Prolog
-│   ├── flask_server.py       # API Flask
-│   ├── requirements.txt      # Dependencias Python
-│   └── FLASK_SETUP.md       # Guía de instalación
-└── public/
-    └── logo.png              # Logo LOGIFIT
-\`\`\`
+1. **Base de conocimiento (Prolog)**: `Sistema_Experto.pl` contiene ejercicios, grupos musculares, splits y reglas que definen cómo se generan las rutinas.
 
-## Cómo Funciona
+2. **Motor de inferencia**: Prolog aplica las reglas y restricciones para seleccionar ejercicios y formar los días de entrenamiento según el split y objetivo.
 
-1. **Base de Conocimiento**: El archivo `sistema_experto.pl` contiene:
-   - Grupos musculares
-   - Ejercicios clasificados por tipo (compuesto/accesorio)
-   - Definición de splits de entrenamiento
-   - Reglas de generación de rutinas
+3. **API Flask**: `backend/app.py` actúa como puente entre el frontend y Prolog (usa PySwip para ejecutar consultas y devuelve JSON con la rutina).
 
-2. **Motor de Inferencia**: El sistema Prolog:
-   - Selecciona ejercicios aleatoriamente según el grupo muscular
-   - Aplica restricciones de tipo de ejercicio
-   - Genera rutinas completas según el split seleccionado
-
-3. **API Flask**: Interfaz entre Prolog y el frontend:
-   - Recibe solicitudes del chatbot
-   - Ejecuta consultas Prolog usando PySwip
-   - Formatea y devuelve las rutinas generadas
-
-4. **Frontend Next.js**: Interfaz de usuario moderna:
-   - Chatbot con botones de selección
-   - Visualización detallada de rutinas
-   - Diseño responsivo y minimalista
+4. **Frontend Next.js**: Interfaz que permite al usuario seleccionar opciones (split, objetivo) vía chatbot y muestra la rutina generada.
 
 ## API Endpoints
 
@@ -111,15 +76,15 @@ logifit/
 Genera una rutina personalizada.
 
 **Request:**
-\`\`\`json
+```
 {
   "tipoRutina": "full_body | upper_lower | push_pull_legs",
   "objetivo": "fuerza | hipertrofia"
 }
-\`\`\`
+```
 
 **Response:**
-\`\`\`json
+```
 {
   "rutina": [
     {
@@ -137,11 +102,11 @@ Genera una rutina personalizada.
   "objetivo": "hipertrofia",
   "tipoRutina": "full_body"
 }
-\`\`\`
+```
 
 ## Tecnologías
 
-- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
 - **Backend**: Flask, PySwip
 - **Sistema Experto**: SWI-Prolog
 - **UI Components**: shadcn/ui
@@ -154,4 +119,4 @@ Genera una rutina personalizada.
 ## Licencia
 
 MIT
-\`\`\`
+
