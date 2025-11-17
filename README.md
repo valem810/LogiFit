@@ -38,26 +38,53 @@ npm install
 
 > Nota: el bloque anterior está etiquetado `bash` — es el único bloque con esa etiqueta. A continuación abre dos consolas separadas y sigue los pasos para frontend y backend.
 
-### 2) Consola A — Backend
+### 2) Opciones para ejecutar (script automático o manual)
 
-En la primera consola, instala las dependencias de Python (si no lo hiciste ya) y arranca el servidor Flask:
+Puedes iniciar el proyecto de dos maneras: usando el script PowerShell que abre dos ventanas (backend y frontend) o iniciando ambos servicios manualmente en dos consolas separadas.
 
+**a) Usar el script (Windows PowerShell)**
+
+Desde la raíz del proyecto ejecuta:
+
+```powershell
+.\scripts\start-dev.ps1
 ```
+
+Este script abrirá dos ventanas de PowerShell nuevas:
+- Una para el backend que ejecuta `python app.py` desde la carpeta `backend`
+- Otra para el frontend que ejecuta `npm run dev` desde la raíz del repo
+
+Requisitos para que el script funcione correctamente:
+- Tener `python` y `npm` disponibles en `PATH`.
+- Ejecutar PowerShell con la política de ejecución que permita scripts. Si la ejecución está bloqueada, puedes ejecutar el script temporalmente con:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\start-dev.ps1
+```
+
+**b) Iniciar manualmente en dos consolas (método detallado)**
+
+Consola A — Backend (API Flask):
+
+```powershell
 pip install -r backend/requirements.txt
-python backend/app.py
+cd backend
+python app.py
 ```
 
 El backend quedará disponible en `http://localhost:5000`.
 
-### 3) Consola B — Frontend
+Consola B — Frontend (Next.js):
 
-En la segunda consola, inicia el servidor de desarrollo de Next.js:
-
-```
+```powershell
+cd <ruta-a-la-raiz-del-proyecto>  # si no estás ya en la raíz
+npm install   # si no instalaste dependencias previamente
 npm run dev
 ```
 
 El frontend quedará disponible en `http://localhost:3000`.
+
+Si prefieres usar CMD en lugar de PowerShell, los comandos de Python y npm son los mismos; omite las invocaciones específicas de PowerShell.
 
 ## Cómo funciona (resumen)
 
