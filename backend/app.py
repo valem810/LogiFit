@@ -42,7 +42,7 @@ def generate_routine():
         print(rutina_datos)
         print("================================\n")
 
-        # ✔️ Confirmamos que es una lista de strings
+        # Confirmamos que es una lista de strings
         if not isinstance(rutina_datos, list):
             return jsonify({"error": "Respuesta inesperada del sistema experto"}), 500
 
@@ -53,17 +53,13 @@ def generate_routine():
             # Asegurar conversión a string
             dia_str = str(dia_str).strip()
 
-            # --------------------------
-            # 1️⃣ OBTENER NOMBRE DEL DÍA
-            # --------------------------
+            #OBTENER NOMBRE DEL DÍA
             try:
                 nombre_dia = dia_str.split("json(", 1)[1].split(",", 1)[0].strip()
             except:
                 nombre_dia = "desconocido"
 
-            # --------------------------
-            # 2️⃣ EXTRAER LISTA DE EJERCICIOS
-            # --------------------------
+            # EXTRAER LISTA DE EJERCICIOS
             try:
                 ejercicios_raw = dia_str.split("[", 1)[1].rsplit("]", 1)[0]
             except:
@@ -76,9 +72,8 @@ def generate_routine():
 
             ejercicios = []
 
-            # --------------------------
-            # 3️⃣ PROCESAR CADA EJERCICIO
-            # --------------------------
+
+            # PROCESAR CADA EJERCICIO
             for ej in ejercicios_textos:
 
                 ej = ej.rstrip(")").strip()
@@ -98,9 +93,7 @@ def generate_routine():
                     "peso": "A determinar"
                 })
 
-            # --------------------------
-            # 4️⃣ AGREGAR DÍA FORMATEADO
-            # --------------------------
+            # AGREGAR DÍA FORMATEADO
             dias_formateados.append({
                 "dia": nombre_dia,
                 "ejercicios": ejercicios
